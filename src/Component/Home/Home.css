@@ -1,0 +1,37 @@
+.homeImg{
+  max-height: 50vh;
+  width: auto;
+}
+
+.homeComponent {
+  padding-top : 5vh;
+  background-color : #f8081f;
+  min-height:calc(100vh - 122.33px);
+}
+
+h1{
+  font-size: 4em;
+  font-weight:bold;
+  text-align: center;
+  color: #112B5D;
+  font-family: "Amatic SC", Arial;
+  letter-spacing: 10px;
+  margin-bottom:20px;
+}
+
+.picHome{
+  text-align:center;
+}
+
+.commentHome{
+  margin-top:15px;
+  opacity: 0.60;
+}
+
+.score{
+  margin-bottom:0px;
+}
+
+.comment {
+  font-style: italic;
+}

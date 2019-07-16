@@ -1,0 +1,14 @@
+h2 {
+  font-size: 3em;
+  font-weight:bold;
+  text-align: center;
+  color: #112B5D;
+  font-family: "Amatic SC", Arial;
+  letter-spacing: 10px;
+  margin-bottom:20px;
+}
+
+.showComponent {
+  padding-top : 5vh;
+  min-height:calc(100vh - 122.33px);
+}

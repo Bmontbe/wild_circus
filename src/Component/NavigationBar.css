@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css?family=Amatic+SC");
+
+.navigation > .container {
+  flex-direction: row;
+ }
+
+ #logo {
+   margin-left:20px;
+   width: 120px;
+   height: auto;
+ }
+
+ .linkNavBar {
+   color:black !important;
+ }
+
+ .navigationBar {
+  background-image: url(https://i.postimg.cc/cCY5VHGW/e-toile-opacite-8.jpg);
+   z-index: 4;
+  border-bottom : 3px solid #f8081f;
+ }
+
+.linkNavbar{
+  color:#112B5D;
+  font-weight: bold;
+  margin-right: 10px;
+  text-decoration: none !important;
+}
+
+.wild_circus {
+  font-size: 2em;
+  text-shadow: 6px 6px 3px #d5d1d3;
+  font-weight:bold;
+  text-align: center;
+  color: #f8081f;
+  font-family: "Amatic SC", Arial;
+  letter-spacing: 10px;
+  text-decoration: none !important;
+}
+
+a .wild_circus {
+  color : #f8081f;
+}
