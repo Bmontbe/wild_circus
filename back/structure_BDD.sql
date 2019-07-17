@@ -21,7 +21,7 @@ CREATE TABLE `orderswithoutidcustomer` (
   `id_show` INT NOT NULL,
   `adult_place` INT,
   `child_place` INT,
-  FOREIGN KEY (`id_show`) REFERENCES `shows`(`id`),
+  FOREIGN KEY (`id_show`) REFERENCES `shows`(`id`)
 );
 
 CREATE TABLE `shows` (

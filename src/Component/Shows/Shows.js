@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import resaIndex from '../../indexResaAction';
 import editBasket from '../../basketAction';
+import editPlaces from '../../placesAction';
 import { Container, FormGroup, Input, Label, Button, Row, Col, CardText, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import axios from 'axios';
 import 'moment/locale/fr';
@@ -16,6 +18,7 @@ function Shows(props) {
   const [modal, setModal] = useState(false)
   const [selectPlacesAdult, setSelectPlacesAdult] = useState(0)
   const [selectPlacesChildren, setSelectPlacesChildren] = useState(0)
+  const [places, setPlaces] = useState([])
 
 
   useEffect(() => {
@@ -23,6 +26,17 @@ function Shows(props) {
     axios.get(url)
       .then((result) => {
         setShows(result.data)
+        console.log(result)
+      })
+  }, []);
+
+  useEffect(() => {
+    var url = 'http://localhost:8000/places';
+    axios.get(url)
+      .then((result) => {
+        setPlaces(result.data)
+        props.dispatch(editPlaces(result.data))
+        console.log(result)
       })
   }, []);
 
@@ -32,6 +46,7 @@ function Shows(props) {
 
   useEffect(() => {
     props.dispatch(editBasket(totalBasket));
+
   });
 
   const addShow = index => {
@@ -54,6 +69,7 @@ function Shows(props) {
       return total
     }
     const order = {
+      id: shows[props.indexResa].id,
       show: shows[props.indexResa].name,
       city: shows[props.indexResa].city,
       adultPrice: shows[props.indexResa].price_adult,
@@ -66,6 +82,17 @@ function Shows(props) {
     console.log(order)
   }
 
+  const quantity = (id) => {
+    return props.places.map((item, index) => {
+      if (id === item.id) {
+        if (item.num_places === (item.total_adult + item.total_child)) {
+          return "Plus de places"
+        }
+        return item.num_places - (item.total_adult + item.total_child)
+      }
+    })
+  }
+
   return (
     <div className='showComponent'>
       <h2>Nos spectacles en cours</h2>
@@ -75,14 +102,17 @@ function Shows(props) {
             <Col sm="3" className="commentHome">
               <CardText className='CardText'>{show.name}</CardText>
             </Col>
-            <Col sm="3" className="commentHome">
+            <Col sm="2" className="commentHome">
               <CardText className='CardText'>{show.city}</CardText>
             </Col>
             <Col sm="3" className="commentHome">
               <CardText className='CardText'>{moment(show.date_show).format("dddd Do MMMM YYYY")}</CardText>
             </Col>
-            <Col sm="3" className="commentHome">
+            <Col sm="2" className="commentHome">
               <Button onClick={e => addShow(index)}>Réserver</Button>
+            </Col>
+            <Col sm="2" className="commentHome">
+              <CardText className='CardText'>{quantity(show.id)}</CardText>
             </Col>
           </Row>
         )) : ""}
@@ -134,7 +164,9 @@ function Shows(props) {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={addBasket}>Ajouter au panier</Button>
-            <Button color="secondary">Retour</Button>
+            <Button color="primary" >
+              <Link className='buttonBasket' to={`${process.env.PUBLIC_URL}/panier`}>Voir le panier</Link>
+            </Button>
           </ModalFooter>
         </Modal>
       </div>
@@ -144,7 +176,8 @@ function Shows(props) {
 
 const mapStateToProps = state => ({
   indexResa: state.indexResa,
-  basket: state.basket
+  basket: state.basket,
+  places: state.places
 });
 
 export default connect(mapStateToProps)(Shows);

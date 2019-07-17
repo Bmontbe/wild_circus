@@ -52,6 +52,50 @@ api.get('/shows', (req, res) => {
   });
 });
 
+api.get('/orders', (req, res) => {
+  connection.query('SELECT o.id, s.name, s.city, s.date_show, s.num_places, s.price_adult, o.adult_place, s.price_child, o.child_place FROM orderswithoutidcustomer o JOIN shows s ON s.id=o.id_show',(err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+api.post('/orders', (req, res) => {
+  console.log(req.body);
+  const data = { id_show: req.body.id_show, adult_place: req.body.adult_place, child_place: req.body.child_place};
+  const sql = 'INSERT INTO orderswithoutidcustomer SET ?';
+  connection.query(sql, data, (err, result) => {
+    if (err) {
+    console.log(err)
+      res.status(500).send("Erreur lors de l'envoi du commentaire");
+    } else {
+      console.log(result);
+      res.sendStatus(200);
+    }
+  });
+});
+
+api.post('/shows', (req, res) => {
+  console.log(req.body);
+  const data = { name: req.body.name, city: req.body.city, date_show: req.body.date_show, num_places: req.body.num_places, price_adult: req.body.price_adult, price_child: req.body.price_child, code_postal: req.body.code_postal};
+  const sql = 'INSERT INTO shows SET ?';
+  connection.query(sql, data, (err, result) => {
+    if (err) {
+    console.log(err)
+      res.status(500).send("Erreur lors de l'envoi du commentaire");
+    } else {
+      console.log(result);
+      res.sendStatus(200);
+    }
+  });
+});
+
+api.get('/places', (req, res) => {
+  connection.query('SELECT s.id, s.name, s.date_show, s.city, s.num_places, SUM(o.adult_place) AS total_adult, SUM(o.child_place) AS total_child FROM orderswithoutidcustomer o JOIN shows s ON s.id=o.id_show GROUP BY id_show',(err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
 
 api.listen(port,(err) => {
   if(err) throw err;

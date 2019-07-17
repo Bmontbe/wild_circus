@@ -12,3 +12,8 @@ h2 {
   padding-top : 5vh;
   min-height:calc(100vh - 122.33px);
 }
+
+.buttonBasket{
+  color:white;
+  text-decoration: none !important;
+}

@@ -58,16 +58,17 @@ function Home() {
       .catch(error => {
         console.log(error, 'probleme');
       });
-
+    setComments([...comments, inputComment])
     setPseudo('');
     setComment('');
     setScore('');
+    setModal(!modal)
   };
 
   return (
     <div className="homeComponent">
       <h1>Bienvenue au Wild Circus</h1>
-      <Container>
+      <Container className='homeCardImg'>
         <Row>
           <Col sm="4" className="picHome">
             <CardImg src={`${process.env.PUBLIC_URL}/assets/pics/magician.jpg`} alt="magician" className="homeImg" />
@@ -80,7 +81,14 @@ function Home() {
           </Col>
         </Row>
       </Container>
+
       <Container>
+      <Row>
+        <Col sm="9"></Col>
+        <Col sm="3">
+        <Button onClick={addComment} className>Ajouter un commentaire</Button>
+        </Col>
+        </Row>
         {button ?
           (<Row>
             <Col sm="6" className="commentHome">
@@ -110,10 +118,7 @@ function Home() {
         <Col sm="3">
         <Button onClick={seeMore} className>{!button ? 'Voir moins' : 'Voir plus'}</Button>
         </Col>
-        <Col sm="6"></Col>
-        <Col sm="3">
-        <Button onClick={addComment} className>Ajouter un commentaire</Button>
-        </Col>
+        <Col sm="9"></Col>
         </Row>
       </Container>
       <Modal isOpen={modal} toggle={addComment} >
@@ -142,8 +147,7 @@ function Home() {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={() => clickPost()} >Ajouter au panier</Button>
-          <Button color="secondary">Retour</Button>
+          <Button color="primary" onClick={() => clickPost()} >Ajouter mon commentaire</Button>
         </ModalFooter>
       </Modal>
 

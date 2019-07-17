@@ -10,10 +10,12 @@ import * as serviceWorker from './serviceWorker';
 //REDUCERS
 import indexResaReducer from './indexResaReducer';
 import basketReducer from './basketReducer';
+import placesReducer from './placesReducer';
 
 const allReducers = combineReducers({
   indexResa: indexResaReducer,
   basket: basketReducer,
+  places: placesReducer
 })
 
 const store = createStore(

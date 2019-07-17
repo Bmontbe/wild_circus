@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Container, Card, Row, Col, CardImg, CardTitle, CardText } from 'reactstrap';
+import { Container, Card, Row, Col, Button, CardText } from 'reactstrap';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import './Basket.css';
 
@@ -25,14 +26,33 @@ function Basket(props) {
     return totalPrice;
   }
 
+  const clickPost = () => {
+    const url = 'http://localhost:8000/orders';
+    totalBasket.map(order => {
+      const validateOrders = {
+        id_show: order.id,
+        adult_place: order.adultPlaces,
+        child_place: order.childrenPlaces
+      }
+      axios.post(url, validateOrders)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => {
+          console.log(error, 'probleme');
+        });
+    })
+  };
+
   return (
     <div>
       {totalBasket.length > 0 ?
         (
           <Fragment>
             <Container className='blocBasket'>
-              <Card body>
+              
                 {totalBasket.length > 0 ? totalBasket.map((article, index) => (
+                  <Card body>
                   <Row>
                     <Col sm="2" className="commentHome">
                       <CardText className='score'> {article.show}</CardText>
@@ -49,11 +69,13 @@ function Basket(props) {
                       <CardText className='score'> {totalOneOrder(index)} € </CardText>
                     </Col>
                   </Row>
+                  </Card>
                 )) : ""}
-              </Card>
+              
             </Container>
             <Container>
               <CardText className='totalPrice'>Total : {totalPrice(props.basket)} €</CardText>
+              <Button onClick={clickPost}>Valider ma commande</Button>
             </Container>
           </Fragment>)
         : (<h2>Votre panier est vide</h2>)}
@@ -66,3 +88,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps)(Basket);
+

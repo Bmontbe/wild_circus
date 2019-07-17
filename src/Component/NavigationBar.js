@@ -37,7 +37,7 @@ function NavigationBar(props) {
               <Link to={`${process.env.PUBLIC_URL}/spectacles`} className='linkNavbar' href="#">Nos spectacles</Link>
             </NavItem>
             <NavItem>
-              <Link to={`${process.env.PUBLIC_URL}/compte`} className='linkNavbar' href="#">Espace administrateur</Link>
+              <Link to={`${process.env.PUBLIC_URL}/espaceAdmin`} className='linkNavbar' href="#">Espace administrateur</Link>
             </NavItem>
             <NavItem>
               <Link to={`${process.env.PUBLIC_URL}/panier`} className='linkNavbar' href="#">{props.basket && props.basket.length>0 ? `Panier (${props.basket.length})` : "Panier" }</Link>
