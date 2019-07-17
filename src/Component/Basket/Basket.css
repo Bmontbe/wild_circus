@@ -1,0 +1,12 @@
+.blocBasket{
+  margin-top :20px;
+}
+
+.totalPrice{
+  margin-top :20px;
+  font-family: "Amatic SC", Arial;
+  font-size: 3em;
+  font-weight:bold;
+  text-align: center;
+  color: #112B5D;
+}

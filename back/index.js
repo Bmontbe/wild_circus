@@ -1,14 +1,18 @@
 const express = require('express');
+const api = express();
 const mysql = require('mysql');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const connection = require('./conf');
 const port = 8000;
-const api = express();
 
 api.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   next();
 })
 
+api.use(bodyParser.json());
+api.use(cors());
 
 connection.connect((err) => {
   if (err) throw err;
@@ -20,11 +24,26 @@ api.get('/', (req, res) => {
 });
 
 api.get('/comments', (req, res) => {
-  connection.query('SELECT * FROM comment',(err, result) => {
+  connection.query('SELECT * FROM commentwithoutidcustomer',(err, result) => {
     if (err) throw err;
     res.send(result);
   });
 });
+
+api.post('/comments', (req, res) => {
+  console.log(req.body);
+  const data = { pseudo: req.body.pseudo, customer_comment: req.body.customer_comment, score: req.body.score};
+  const sql = 'INSERT INTO commentwithoutidcustomer SET ?';
+  connection.query(sql, data, (err, result) => {
+    if (err) {
+      res.status(500).send("Erreur lors de l'envoi du commentaire");
+    } else {
+      console.log(result);
+      res.sendStatus(200);
+    }
+  });
+});
+
 
 api.get('/shows', (req, res) => {
   connection.query('SELECT * FROM shows',(err, result) => {
@@ -39,21 +58,6 @@ api.listen(port,(err) => {
   console.log('API running ..');
 })
 
-
-// app.post('/api/events', (req, res) => {
-//   console.log(req.body);
-//   const data = { event: req.body.event, date_event: req.body.date_event, picture: req.body.picture, comment: req.body.comment };
-//   const sql = 'INSERT INTO event SET ?';
-//   connection.query(sql, data, (err, results) => {
-//     if (err) {
-//       // Si une erreur est survenue, alors on informe l'utilisateur de l'erreur
-//       res.status(500).send('Erreur lors de la récupération des évènements');
-//     } else {
-//       console.log(results);
-//       res.sendStatus(200);
-//     }
-//   });
-// });
 
 // app.delete('/api/events/:id', (req, res) => {
 //   console.log(req.body);

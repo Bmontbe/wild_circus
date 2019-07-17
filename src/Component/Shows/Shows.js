@@ -27,8 +27,12 @@ function Shows(props) {
   }, []);
 
   useEffect(() => {
-    setTotalBasket(props.basket);
+    setTotalBasket(props.basket)
   }, []);
+
+  useEffect(() => {
+    props.dispatch(editBasket(totalBasket));
+  });
 
   const addShow = index => {
     props.dispatch(resaIndex(index));
@@ -45,17 +49,21 @@ function Shows(props) {
   }
 
   const addBasket = () => {
+    const totalOneOrder = (index) => {
+      const total = selectPlacesAdult * shows[props.indexResa].price_adult + selectPlacesChildren * shows[props.indexResa].price_child
+      return total
+    }
     const order = {
-      show : shows[props.indexResa].name,
-      city : shows[props.indexResa].city,
-      adultPrice : shows[props.indexResa].price_adult,
-      adultPlaces : selectPlacesAdult,
-      adultPrice : shows[props.indexResa].price_child,
-      childrenPlaces : selectPlacesChildren
+      show: shows[props.indexResa].name,
+      city: shows[props.indexResa].city,
+      adultPrice: shows[props.indexResa].price_adult,
+      adultPlaces: selectPlacesAdult,
+      childPrice: shows[props.indexResa].price_child,
+      childrenPlaces: selectPlacesChildren,
+      totalOrder: totalOneOrder()
     }
     setTotalBasket([...totalBasket, order])
     console.log(order)
-    props.dispatch(editBasket(totalBasket))
   }
 
   return (
@@ -96,8 +104,8 @@ function Shows(props) {
               <Col sm="4" className="commentHome">
                 <FormGroup>
                   <Input type="select" name="select" id="exampleSelect" onChange={handleSelectPlacesAdult}>
-                    <option>1</option>
                     <option>0</option>
+                    <option>1</option>
                     <option>2</option>
                     <option>3</option>
                     <option>4</option>
@@ -113,7 +121,7 @@ function Shows(props) {
               <Col sm="4" className="commentHome">
                 <FormGroup>
                   <Input type="select" name="select" id="exampleSelect" onChange={handleSelectPlacesChildren}>
-                    <option>1</option>
+                    <option>0</option>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -136,7 +144,7 @@ function Shows(props) {
 
 const mapStateToProps = state => ({
   indexResa: state.indexResa,
-  basket:state.basket
+  basket: state.basket
 });
 
 export default connect(mapStateToProps)(Shows);

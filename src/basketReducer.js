@@ -2,9 +2,7 @@
 const basketReducer = (state = [], action) => {
   switch (action.type) {
     case 'EDIT_BASKET': {
-      const newStateBasket = { ...state };
-      newStateBasket = action.payload;
-      return newStateBasket;
+      return action.payload;
     }
     default:
       return state;

@@ -5,7 +5,6 @@
 
 .homeComponent {
   padding-top : 5vh;
-  background-color : #f8081f;
   min-height:calc(100vh - 122.33px);
 }
 
@@ -25,7 +24,11 @@ h1{
 
 .commentHome{
   margin-top:15px;
-  opacity: 0.60;
+  margin-bottom:15px;
+}
+
+.cardComment{
+  background-image: url(https://i.postimg.cc/cCY5VHGW/e-toile-opacite-8.jpg);
 }
 
 .score{

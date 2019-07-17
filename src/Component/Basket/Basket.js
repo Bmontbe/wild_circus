@@ -1,13 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
+import { Container, Card, Row, Col, CardImg, CardTitle, CardText } from 'reactstrap';
+import { connect } from 'react-redux';
+import './Basket.css';
 
-function Basket() {
-  
+function Basket(props) {
+  const [totalBasket, setTotalBasket] = useState([])
+
+  useEffect(() => {
+    setTotalBasket(props.basket);
+    console.log(totalBasket)
+  });
+
+
+  const totalOneOrder = (index) => {
+    const total = props.basket[index].adultPlaces * props.basket[index].adultPrice + props.basket[index].childrenPlaces * props.basket[index].childPrice
+    return total
+  }
+
+  const totalPrice = (basket) => {
+    let totalPrice = 0;
+    basket.map(article => {
+      return totalPrice += article.totalOrder;
+    })
+    return totalPrice;
+  }
 
   return (
     <div>
-      
+      {totalBasket.length > 0 ?
+        (
+          <Fragment>
+            <Container className='blocBasket'>
+              <Card body>
+                {totalBasket.length > 0 ? totalBasket.map((article, index) => (
+                  <Row>
+                    <Col sm="2" className="commentHome">
+                      <CardText className='score'> {article.show}</CardText>
+                    </Col>
+                    <Col sm="2" className="commentHome">
+                      <CardText className='score'> {article.city}</CardText>
+                    </Col>
+                    <Col sm="5" className="commentHome">
+                      <CardText className='score'> Nombre de places Adultes : {article.adultPlaces} ({article.adultPrice} €)</CardText>
+                      <CardText className='score'> Nombre de places Enfants : {article.childrenPlaces} ({article.childPrice} €)</CardText>
+                    </Col>
+                    <Col sm="1" className="commentHome"></Col>
+                    <Col sm="2" className="commentHome">
+                      <CardText className='score'> {totalOneOrder(index)} € </CardText>
+                    </Col>
+                  </Row>
+                )) : ""}
+              </Card>
+            </Container>
+            <Container>
+              <CardText className='totalPrice'>Total : {totalPrice(props.basket)} €</CardText>
+            </Container>
+          </Fragment>)
+        : (<h2>Votre panier est vide</h2>)}
     </div>
   );
 }
 
-export default Basket;
+const mapStateToProps = state => ({
+  basket: state.basket
+});
+
+export default connect(mapStateToProps)(Basket);

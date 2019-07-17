@@ -42,6 +42,13 @@ CREATE TABLE `comment` (
   FOREIGN KEY (`id_customer`) REFERENCES `customer`(`id`)
 );
 
+CREATE TABLE `commentwithoutidcustomer` (
+  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `pseudo` varchar(100) NOT NULL,
+  `customer_comment` TEXT,
+  `score` INT
+);
+
 ALTER TABLE `show`
 ADD code_postal VARCHAR(5)
 -- ALTER TABLE `event` ADD PRIMARY KEY (`id`);

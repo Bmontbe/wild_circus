@@ -10,3 +10,6 @@ INSERT INTO comment (id_customer, customer_comment, score) VALUES
 ('1', 'super spectacle, bravo !', '5'),
 ('1', 'bien mais un peu loin', '3');
 
+INSERT INTO commentwithoutidcustomer (pseudo, customer_comment, score) VALUES
+('Jeandu69', 'super spectacle, bravo !', '5'),
+('Bernard10', 'bien mais un peu loin', '3');
