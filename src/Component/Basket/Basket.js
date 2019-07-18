@@ -88,18 +88,18 @@ function Basket(props) {
             </Container>
           </Fragment>)
         : (<h2>Votre panier est vide</h2>)}
-            <Modal isOpen={modal} toggle={thanksOrder} >
-            <ModalHeader toggle={thanksOrder}>Félicitations</ModalHeader>
-              <ModalBody >
-                Votre commande a bien été enregistrée !
+      <Modal isOpen={modal} toggle={thanksOrder} >
+        <ModalHeader toggle={thanksOrder}>Félicitations</ModalHeader>
+        <ModalBody >
+          Votre commande a bien été enregistrée !
               </ModalBody>
-              <ModalFooter>
-                <Button color="primary" >
-                  <Link className='buttonBasket' to={`${process.env.PUBLIC_URL}/spectacles`}>Retour aux spectacles</Link>
-                </Button>
-              </ModalFooter>
-            </Modal>
-  </div>
+        <ModalFooter>
+          <Button color="primary" >
+            <Link className='buttonBasket' to={`${process.env.PUBLIC_URL}/spectacles`}>Retour aux spectacles</Link>
+          </Button>
+        </ModalFooter>
+      </Modal>
+    </div>
   );
 }
 

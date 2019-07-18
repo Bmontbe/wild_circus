@@ -27,9 +27,9 @@ function Shows(props) {
     let temp = [...shows];
     console.log(temp)
     temp = _.filter(temp, (event) => {
-      return event.city.toLowerCase().includes(searchShow.toLowerCase()) 
-      || event.code_postal.includes(searchShow) 
-      || event.name.toLowerCase().includes(searchShow.toLowerCase()) ;
+      return event.city.toLowerCase().includes(searchShow.toLowerCase())
+        || event.code_postal.includes(searchShow)
+        || event.name.toLowerCase().includes(searchShow.toLowerCase());
     })
     setNewShows(temp);
   }, [searchShow])
@@ -105,9 +105,9 @@ function Shows(props) {
     props.places.map((item, index) => {
       if (id === item.id) {
         if (item.num_places <= (item.total_adult + item.total_child)) {
-          result = {text : "Plus de places", statut : true}
+          result = { text: "Plus de places", statut: true }
         } else {
-          result = {text : item.num_places - (item.total_adult + item.total_child), statut : false}
+          result = { text: item.num_places - (item.total_adult + item.total_child), statut: false }
         }
       }
     })
@@ -119,9 +119,9 @@ function Shows(props) {
       <h2>Nos spectacles en cours</h2>
 
       <Container>
-      <Form className="searchBar" inline> Rechercher
+        <Form className="searchBar" inline> Rechercher
         <FormControl type="text" placeholder="ville / code postal / spectacle" className="mr-sm-2 ml-sm-2" onChange={handleSearchShow} />
-    </Form>
+        </Form>
         {newShows ? newShows.map((show, index) => (
           <Row>
             <Col sm="3" className="commentHome">

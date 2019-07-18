@@ -83,11 +83,11 @@ function Home() {
       </Container>
 
       <Container>
-      <Row>
-        <Col sm="9"></Col>
-        <Col sm="3">
-        <Button onClick={addComment} className>Ajouter un commentaire</Button>
-        </Col>
+        <Row>
+          <Col sm="9"></Col>
+          <Col sm="3">
+            <Button onClick={addComment} className>Ajouter un commentaire</Button>
+          </Col>
         </Row>
         {button ?
           (<Row>
@@ -115,10 +115,10 @@ function Home() {
             )) : ""}
           </Row>)}
         <Row>
-        <Col sm="3">
-        <Button onClick={seeMore} className>{!button ? 'Voir moins' : 'Voir plus'}</Button>
-        </Col>
-        <Col sm="9"></Col>
+          <Col sm="3">
+            <Button onClick={seeMore} className>{!button ? 'Voir moins' : 'Voir plus'}</Button>
+          </Col>
+          <Col sm="9"></Col>
         </Row>
       </Container>
       <Modal isOpen={modal} toggle={addComment} >
