@@ -25,3 +25,7 @@ h2 {
 .noPlace:hover{
   background-color: red;
 }
+
+.searchBar{
+  font-weight:bold;
+}

@@ -27,7 +27,10 @@ function AdminSpace(props) {
   useEffect(() => {
     let temp = [...totalOrders];
     temp = _.filter(temp, (event) => {
-      return event.name.includes(searchShow);
+      return event.city.toLowerCase().includes(searchShow.toLowerCase()) 
+      || event.code_postal.includes(searchShow) 
+      || event.id.toString().includes(searchShow)
+      || event.name.toLowerCase().includes(searchShow.toLowerCase());
     })
     setNewOrders(temp);
   }, [searchShow])
@@ -155,10 +158,11 @@ function AdminSpace(props) {
         </Container>
 
       </Form>
+      <hr/>
       <h2>Commandes clients : {totalOrders.length}</h2>
       <Container>
-      <Form inline>
-        <FormControl type="text" placeholder="Chercher un spectacle" className="mr-sm-2" onChange={handleSearchShow} />
+      <Form className="searchBar" inline> Rechercher
+        <FormControl type="text" placeholder="taper votre recherche" className="mb-sm-2 ml-sm-2 mr-sm-2" onChange={handleSearchShow} />
     </Form>
       <Table>
         <thead>

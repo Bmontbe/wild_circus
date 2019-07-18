@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { FormControl } from 'react-bootstrap';
 import resaIndex from '../../indexResaAction';
 import editBasket from '../../basketAction';
 import editPlaces from '../../placesAction';
-import { Container, FormGroup, Input, Label, Button, Row, Col, CardText, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Container, Form, FormGroup, Input, Label, Button, Row, Col, CardText, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import _ from 'underscore';
 import axios from 'axios';
 import 'moment/locale/fr';
 import moment from 'moment';
@@ -15,18 +16,34 @@ moment.locale('fr');
 function Shows(props) {
   const [totalBasket, setTotalBasket] = useState([])
   const [shows, setShows] = useState([])
+  const [newShows, setNewShows] = useState([])
   const [modal, setModal] = useState(false)
   const [selectPlacesAdult, setSelectPlacesAdult] = useState(0)
   const [selectPlacesChildren, setSelectPlacesChildren] = useState(0)
   const [places, setPlaces] = useState([])
-  const [noPlace, setNoPlace] = useState(false)
+  const [searchShow, setSearchShow] = useState('')
 
+  useEffect(() => {
+    let temp = [...shows];
+    console.log(temp)
+    temp = _.filter(temp, (event) => {
+      return event.city.toLowerCase().includes(searchShow.toLowerCase()) 
+      || event.code_postal.includes(searchShow) 
+      || event.name.toLowerCase().includes(searchShow.toLowerCase()) ;
+    })
+    setNewShows(temp);
+  }, [searchShow])
+
+  const handleSearchShow = (e) => {
+    setSearchShow(e.target.value)
+  }
 
   useEffect(() => {
     var url = 'http://localhost:8000/shows';
     axios.get(url)
       .then((result) => {
         setShows(result.data)
+        setNewShows(result.data)
         console.log(result)
       })
   }, []);
@@ -47,7 +64,6 @@ function Shows(props) {
 
   useEffect(() => {
     props.dispatch(editBasket(totalBasket));
-
   });
 
   const addShow = index => {
@@ -101,8 +117,12 @@ function Shows(props) {
   return (
     <div className='showComponent'>
       <h2>Nos spectacles en cours</h2>
+
       <Container>
-        {shows ? shows.map((show, index) => (
+      <Form className="searchBar" inline> Rechercher
+        <FormControl type="text" placeholder="ville / code postal / spectacle" className="mr-sm-2 ml-sm-2" onChange={handleSearchShow} />
+    </Form>
+        {newShows ? newShows.map((show, index) => (
           <Row>
             <Col sm="3" className="commentHome">
               <CardText className='CardText'>{show.name}</CardText>

@@ -53,7 +53,7 @@ api.get('/shows', (req, res) => {
 });
 
 api.get('/orders', (req, res) => {
-  connection.query('SELECT o.id, s.name, s.city, s.date_show, s.num_places, s.price_adult, o.adult_place, s.price_child, o.child_place FROM orderswithoutidcustomer o JOIN shows s ON s.id=o.id_show',(err, result) => {
+  connection.query('SELECT o.id, s.name, s.city, s.code_postal, s.date_show, s.num_places, s.price_adult, o.adult_place, s.price_child, o.child_place FROM orderswithoutidcustomer o JOIN shows s ON s.id=o.id_show',(err, result) => {
     if (err) throw err;
     res.send(result);
   });
