@@ -12,7 +12,6 @@ import AdminSpace from './Component/AdminSpace/AdminSpace';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
       <NavigationBar/>
       <Switch>
         <Route exact path={`${process.env.PUBLIC_URL}/`} component={Home} />
@@ -21,7 +20,7 @@ function App() {
         <Route path={`${process.env.PUBLIC_URL}/espaceAdmin`} component={AdminSpace} />
         <Route path={`${process.env.PUBLIC_URL}/panier`} component={Basket} />
       </Switch>
-      </header>
+
     </div>
   );
 }

@@ -19,6 +19,7 @@ function Shows(props) {
   const [selectPlacesAdult, setSelectPlacesAdult] = useState(0)
   const [selectPlacesChildren, setSelectPlacesChildren] = useState(0)
   const [places, setPlaces] = useState([])
+  const [noPlace, setNoPlace] = useState(false)
 
 
   useEffect(() => {
@@ -79,18 +80,22 @@ function Shows(props) {
       totalOrder: totalOneOrder()
     }
     setTotalBasket([...totalBasket, order])
+    setModal(!modal)
     console.log(order)
   }
 
   const quantity = (id) => {
-    return props.places.map((item, index) => {
+    let result = {}
+    props.places.map((item, index) => {
       if (id === item.id) {
-        if (item.num_places === (item.total_adult + item.total_child)) {
-          return "Plus de places"
+        if (item.num_places <= (item.total_adult + item.total_child)) {
+          result = {text : "Plus de places", statut : true}
+        } else {
+          result = {text : item.num_places - (item.total_adult + item.total_child), statut : false}
         }
-        return item.num_places - (item.total_adult + item.total_child)
       }
     })
+    return result
   }
 
   return (
@@ -109,10 +114,10 @@ function Shows(props) {
               <CardText className='CardText'>{moment(show.date_show).format("dddd Do MMMM YYYY")}</CardText>
             </Col>
             <Col sm="2" className="commentHome">
-              <Button onClick={e => addShow(index)}>Réserver</Button>
+              {quantity(show.id).statut ? <Button disabled className="noPlace">Réserver</Button> : <Button onClick={() => addShow(index)}>Réserver</Button>}
             </Col>
             <Col sm="2" className="commentHome">
-              <CardText className='CardText'>{quantity(show.id)}</CardText>
+              <CardText className='CardText'>{show.id && quantity(show.id).text}</CardText>
             </Col>
           </Row>
         )) : ""}
@@ -164,9 +169,6 @@ function Shows(props) {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={addBasket}>Ajouter au panier</Button>
-            <Button color="primary" >
-              <Link className='buttonBasket' to={`${process.env.PUBLIC_URL}/panier`}>Voir le panier</Link>
-            </Button>
           </ModalFooter>
         </Modal>
       </div>

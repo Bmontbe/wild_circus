@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { FormControl } from 'react-bootstrap';
 import resaIndex from '../../indexResaAction';
 import editBasket from '../../basketAction';
 import { Row, Col, Container, Form, FormGroup, Label, Input, Button, Table} from 'reactstrap';
@@ -12,7 +13,8 @@ import _ from 'underscore';
 moment.locale('fr');
 
 function AdminSpace(props) {
-  const [totalOrders, setTotalOrders] = useState([])
+  const [totalOrders, setTotalOrders] = useState([]);
+  const [newOrders, setNewOrders] = useState([]);
   const [name, setName] = useState('')
   const [city, setCity] = useState('')
   const [date, setDate] = useState('')
@@ -20,6 +22,19 @@ function AdminSpace(props) {
   const [priceChild, setPriceChild] = useState('')
   const [codePostal, setCodePostal] = useState('')
   const [places, setPlaces] = useState('')
+  const [searchShow, setSearchShow] = useState('')
+
+  useEffect(() => {
+    let temp = [...totalOrders];
+    temp = _.filter(temp, (event) => {
+      return event.name.includes(searchShow);
+    })
+    setNewOrders(temp);
+  }, [searchShow])
+
+  const handleSearchShow = (e) => {
+    setSearchShow(e.target.value)
+  }
 
   const handleName = (e) => {
     setName(e.target.value)
@@ -53,7 +68,8 @@ function AdminSpace(props) {
     var url = 'http://localhost:8000/orders';
     axios.get(url)
       .then((result) => {
-        setTotalOrders(result.data)
+        setTotalOrders(result.data);
+        setNewOrders(result.data);
         console.log(result)
       })
   }, []);
@@ -126,21 +142,24 @@ function AdminSpace(props) {
           <Input type="number" name="name" placeholder="Prix Enfants" onChange={handlePriceChild} />
         </FormGroup>
         </Col>
-        <Col sm="8" className="commentHome">
+        <Col sm="6" className="commentHome">
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
           <Label for="exampleEmail" className="mr-sm-2">Nombre de places</Label>
           <Input type="number" name="name" placeholder="Nombre de places" onChange={handlePlaces} />
         </FormGroup>
         </Col>
-        <Col sm="4" className="commentHome">
-        <Button onClick={clickPost}>Submit</Button>
+        <Col sm="6" className="commentHome">
+        <Button onClick={clickPost}>Ajouter le spectacle</Button>
         </Col>
         </Row>
         </Container>
 
       </Form>
-      <h2>Commandes clients</h2>
+      <h2>Commandes clients : {totalOrders.length}</h2>
       <Container>
+      <Form inline>
+        <FormControl type="text" placeholder="Chercher un spectacle" className="mr-sm-2" onChange={handleSearchShow} />
+    </Form>
       <Table>
         <thead>
           <tr>
@@ -154,7 +173,7 @@ function AdminSpace(props) {
           </tr>
         </thead>
         <tbody>
-        {totalOrders ? totalOrders.map((order, index) => (
+        {newOrders ? newOrders.map((order, index) => (
                     <tr>
                     <th scope="row">{order.id}</th>
                     <td>{order.name}</td>

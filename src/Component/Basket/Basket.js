@@ -1,21 +1,27 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Container, Card, Row, Col, Button, CardText } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Container, Card, Row, Col, Button, CardText, Modal, ModalFooter, ModalHeader, ModalBody } from 'reactstrap';
+import editBasket from '../../basketAction';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import './Basket.css';
 
 function Basket(props) {
   const [totalBasket, setTotalBasket] = useState([])
+  const [modal, setModal] = useState(false)
 
   useEffect(() => {
     setTotalBasket(props.basket);
     console.log(totalBasket)
   });
 
-
   const totalOneOrder = (index) => {
     const total = props.basket[index].adultPlaces * props.basket[index].adultPrice + props.basket[index].childrenPlaces * props.basket[index].childPrice
     return total
+  }
+
+  const thanksOrder = () => {
+    setModal(!modal)
   }
 
   const totalPrice = (basket) => {
@@ -42,6 +48,9 @@ function Basket(props) {
           console.log(error, 'probleme');
         });
     })
+    setTotalBasket([])
+    setModal(!modal)
+    props.dispatch(editBasket([]))
   };
 
   return (
@@ -50,9 +59,9 @@ function Basket(props) {
         (
           <Fragment>
             <Container className='blocBasket'>
-              
-                {totalBasket.length > 0 ? totalBasket.map((article, index) => (
-                  <Card body>
+
+              {totalBasket.length > 0 ? totalBasket.map((article, index) => (
+                <Card body>
                   <Row>
                     <Col sm="2" className="commentHome">
                       <CardText className='score'> {article.show}</CardText>
@@ -69,9 +78,9 @@ function Basket(props) {
                       <CardText className='score'> {totalOneOrder(index)} € </CardText>
                     </Col>
                   </Row>
-                  </Card>
-                )) : ""}
-              
+                </Card>
+              )) : ""}
+
             </Container>
             <Container>
               <CardText className='totalPrice'>Total : {totalPrice(props.basket)} €</CardText>
@@ -79,7 +88,18 @@ function Basket(props) {
             </Container>
           </Fragment>)
         : (<h2>Votre panier est vide</h2>)}
-    </div>
+            <Modal isOpen={modal} toggle={thanksOrder} >
+            <ModalHeader toggle={thanksOrder}>Félicitations</ModalHeader>
+              <ModalBody >
+                Votre commande a bien été enregistrée !
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" >
+                  <Link className='buttonBasket' to={`${process.env.PUBLIC_URL}/spectacles`}>Retour aux spectacles</Link>
+                </Button>
+              </ModalFooter>
+            </Modal>
+  </div>
   );
 }
 
