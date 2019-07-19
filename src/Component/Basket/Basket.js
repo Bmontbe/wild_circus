@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Card, Row, Col, Button, CardText, Modal, ModalFooter, ModalHeader, ModalBody } from 'reactstrap';
-import editBasket from '../../basketAction';
+import editBasket from '../../Actions/basketAction';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import './Basket.css';

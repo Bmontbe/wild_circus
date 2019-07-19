@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FormControl } from 'react-bootstrap';
-import resaIndex from '../../indexResaAction';
-import editBasket from '../../basketAction';
-import { Row, Col, Container, Form, FormGroup, Label, Input, Button, Table } from 'reactstrap';
+import { CardText, Row, Col, Container, Form, FormGroup, Label, Input, Button, Table } from 'reactstrap';
+import editShows from '../../Actions/showsAction';
 import axios from 'axios';
 import 'moment/locale/fr';
 import moment from 'moment';
@@ -23,13 +22,23 @@ function AdminSpace(props) {
   const [codePostal, setCodePostal] = useState('')
   const [places, setPlaces] = useState('')
   const [searchShow, setSearchShow] = useState('')
+  const [searchCity, setSearchCity] = useState('')
+  const [downOrder, setDownOrder] = useState(false)
+  const [downShows, setDownShows] = useState(false)
 
   useEffect(() => {
     let temp = [...totalOrders];
     temp = _.filter(temp, (event) => {
-      return event.city.toLowerCase().includes(searchShow.toLowerCase())
-        || event.code_postal.includes(searchShow)
-        || event.id.toString().includes(searchShow)
+      return event.city.toLowerCase().includes(searchCity.toLowerCase())
+        || event.code_postal.includes(searchCity);
+    })
+    setNewOrders(temp);
+  }, [searchCity])
+
+  useEffect(() => {
+    let temp = [...newOrders];
+    temp = _.filter(temp, (event) => {
+      return event.id.toString().includes(searchShow)
         || event.name.toLowerCase().includes(searchShow.toLowerCase());
     })
     setNewOrders(temp);
@@ -38,6 +47,12 @@ function AdminSpace(props) {
   const handleSearchShow = (e) => {
     setSearchShow(e.target.value)
   }
+
+  const handleSearchCity = (e) => {
+    setSearchCity(e.target.value)
+    console.log(searchShow)
+  }
+
 
   const handleName = (e) => {
     setName(e.target.value)
@@ -77,6 +92,15 @@ function AdminSpace(props) {
       })
   }, []);
 
+  useEffect(() => {
+    var url = 'http://localhost:8000/shows';
+    axios.get(url)
+      .then((result) => {
+        console.log(result)
+        props.dispatch(editShows(result.data))
+      })
+  }, []);
+
   const clickPost = () => {
     const url = 'http://localhost:8000/shows';
     const inputShow = {
@@ -98,14 +122,31 @@ function AdminSpace(props) {
   };
 
   const totalOneOrder = (index) => {
-    const total = totalOrders[index].adult_place * totalOrders[index].price_adult + totalOrders[index].child_place * totalOrders[index].price_child
+    const total = newOrders[index].adult_place * newOrders[index].price_adult + newOrders[index].child_place * newOrders[index].price_child
     return total
+  }
+
+  const totalPlaces = () => {
+    let addPlaces = 0;
+    newOrders.map(order => {
+      return addPlaces += order.adult_place + order.child_place;
+    })
+    return addPlaces;
+  }
+
+  const totalEuros = () => {
+    let addPlaces = 0;
+    newOrders.map(order => {
+      return addPlaces += order.adult_place*order.price_adult + order.child_place*order.price_child;
+    })
+    return addPlaces;
   }
 
   return (
     <div className='showComponent'>
-      <h2>Ajouter un spectacle</h2>
-
+      <h2>Ajouter un spectacle<i onClick={()=>(setDownShows(!downShows))} class="fas fa-chevron-circle-down"></i></h2>
+    {downShows ?
+<Fragment>
       <Form inline>
         <Container>
           <Row>
@@ -156,13 +197,46 @@ function AdminSpace(props) {
             </Col>
           </Row>
         </Container>
-
       </Form>
+            <Container>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Nom du spactacle</th>
+                  <th>Date</th>
+                  <th>Ville</th>
+                  <th>Code Postal</th>
+                  <th>Prix Adultes</th>
+                  <th>Prix Enfants</th>
+                  <th>Nombre de places</th>
+                </tr>
+              </thead>
+              <tbody>
+                {props.shows ? props.shows.map((show, index) => (
+                  <tr classeName={moment(show.date_show).format("Do/MM/YYYY") < moment(new Date()).format("Do/MM/YYYY") ? "end":null}>
+                    <th scope="row">{show.name}</th>
+                    <td>{moment(show.date_show).format("Do/MM/YYYY")}</td>
+                    <td>{show.city}</td>
+                    <td>{show.code_postal}</td>
+                    <td>{show.price_adult}€</td>
+                    <td>{show.price_child}€</td>
+                    <td>{show.num_places}</td>
+                  </tr>
+                )) : ""}
+              </tbody>
+            </Table>
+          </Container>
+          </Fragment>
+      : null}
+      
       <hr />
-      <h2>Commandes clients : {totalOrders.length}</h2>
+      <h2>Commandes clients : {totalOrders.length}<i onClick={()=>(setDownOrder(!downOrder))} class="fas fa-chevron-circle-down"></i></h2>
+      { downOrder ?
       <Container>
         <Form className="searchBar" inline> Rechercher
-        <FormControl type="text" placeholder="taper votre recherche" className="mb-sm-2 ml-sm-2 mr-sm-2" onChange={handleSearchShow} />
+        <FormControl type="text" placeholder="ville / code postal" className="mb-sm-2 ml-sm-2 mr-sm-2" onChange={handleSearchCity} />
+        <FormControl type="text" placeholder="spectacle" className="mb-sm-2 ml-sm-2 mr-sm-2" onChange={handleSearchShow} />
+        <CardText>Total : {newOrders.length} commandes - {totalPlaces()} places - {totalEuros()}€</CardText>
         </Form>
         <Table>
           <thead>
@@ -191,13 +265,16 @@ function AdminSpace(props) {
           </tbody>
         </Table>
       </Container>
+      : null}
     </div>
+    
   );
 }
 
 const mapStateToProps = state => ({
   indexResa: state.indexResa,
-  basket: state.basket
+  basket: state.basket,
+  shows:state.shows
 });
 
 export default connect(mapStateToProps)(AdminSpace);

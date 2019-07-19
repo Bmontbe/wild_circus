@@ -8,14 +8,16 @@ import { BrowserRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 //REDUCERS
-import indexResaReducer from './indexResaReducer';
-import basketReducer from './basketReducer';
-import placesReducer from './placesReducer';
+import indexResaReducer from './Reducers/indexResaReducer';
+import basketReducer from './Reducers/basketReducer';
+import placesReducer from './Reducers/placesReducer';
+import showsReducer from './Reducers/showsReducer';
 
 const allReducers = combineReducers({
   indexResa: indexResaReducer,
   basket: basketReducer,
-  places: placesReducer
+  places: placesReducer,
+  shows: showsReducer
 })
 
 const store = createStore(

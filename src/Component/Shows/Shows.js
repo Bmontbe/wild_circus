@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { FormControl } from 'react-bootstrap';
-import resaIndex from '../../indexResaAction';
-import editBasket from '../../basketAction';
-import editPlaces from '../../placesAction';
+import resaIndex from '../../Actions/indexResaAction';
+import editBasket from '../../Actions/basketAction';
+import editPlaces from '../../Actions/placesAction';
+import editShows from '../../Actions/showsAction';
 import { Container, Form, FormGroup, Input, Label, Button, Row, Col, CardText, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import _ from 'underscore';
 import axios from 'axios';
@@ -25,7 +26,6 @@ function Shows(props) {
 
   useEffect(() => {
     let temp = [...shows];
-    console.log(temp)
     temp = _.filter(temp, (event) => {
       return event.city.toLowerCase().includes(searchShow.toLowerCase())
         || event.code_postal.includes(searchShow)
@@ -45,6 +45,7 @@ function Shows(props) {
         setShows(result.data)
         setNewShows(result.data)
         console.log(result)
+        props.dispatch(editShows(result.data))
       })
   }, []);
 
@@ -102,15 +103,15 @@ function Shows(props) {
 
   const quantity = (id) => {
     let result = {}
-    props.places.map((item, index) => {
-      if (id === item.id) {
-        if (item.num_places <= (item.total_adult + item.total_child)) {
-          result = { text: "Plus de places", statut: true }
-        } else {
-          result = { text: item.num_places - (item.total_adult + item.total_child), statut: false }
+      props.places.map((item, index) => {
+        if (id === item.id) {
+          if (item.num_places > item.total_adult + item.total_child) {
+            result = { text: item.num_places - (item.total_adult + item.total_child), statut: false }
+          } else {
+            result = { text: "Complet", statut: true }
+          }
         }
-      }
-    })
+      })
     return result
   }
 
@@ -137,7 +138,7 @@ function Shows(props) {
               {quantity(show.id).statut ? <Button disabled className="noPlace">Réserver</Button> : <Button onClick={() => addShow(index)}>Réserver</Button>}
             </Col>
             <Col sm="2" className="commentHome">
-              <CardText className='CardText'>{show.id && quantity(show.id).text}</CardText>
+              <CardText className='CardText'>{show.id && props.places[index] ? quantity(show.id).text : newShows[index].num_places}</CardText>
             </Col>
           </Row>
         )) : ""}
@@ -148,13 +149,13 @@ function Shows(props) {
         <Modal isOpen={modal} toggle={addShow} >
           <ModalHeader toggle={addShow}>Réserver vos billets</ModalHeader>
           <ModalBody>
-            {shows[props.indexResa] ?
+            {newShows[props.indexResa] ?
               <CardText>
-                Vous souhaitez réservé le spectacle : <span>{shows[props.indexResa].name} à {shows[props.indexResa].city} le {moment(shows[props.indexResa].date_show).format("dddd Do MMMM YYYY")}</span>
+                Vous souhaitez réservé le spectacle : <span>{newShows[props.indexResa].name} à {newShows[props.indexResa].city} le {moment(newShows[props.indexResa].date_show).format("dddd Do MMMM YYYY")}</span>
               </CardText> : null}
             <Row>
               <Col sm="4" className="commentHome">
-                <CardText className='CardText'>Tarif Adulte : {shows[props.indexResa] && shows[props.indexResa].price_adult}€</CardText>
+                <CardText className='CardText'>Tarif Adulte : {newShows[props.indexResa] && newShows[props.indexResa].price_adult}€</CardText>
               </Col>
               <Col sm="4" className="commentHome">
                 <FormGroup>
@@ -171,7 +172,7 @@ function Shows(props) {
             </Row>
             <Row>
               <Col sm="4" className="commentHome">
-                <CardText className='CardText'>Tarif Enfant : {shows[props.indexResa] && shows[props.indexResa].price_child}€</CardText>
+                <CardText className='CardText'>Tarif Enfant : {newShows[props.indexResa] && newShows[props.indexResa].price_child}€</CardText>
               </Col>
               <Col sm="4" className="commentHome">
                 <FormGroup>
@@ -199,7 +200,8 @@ function Shows(props) {
 const mapStateToProps = state => ({
   indexResa: state.indexResa,
   basket: state.basket,
-  places: state.places
+  places: state.places,
+  shows: state.shows
 });
 
 export default connect(mapStateToProps)(Shows);
